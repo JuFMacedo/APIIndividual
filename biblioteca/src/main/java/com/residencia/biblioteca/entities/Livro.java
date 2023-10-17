@@ -3,6 +3,9 @@ package com.residencia.biblioteca.entities;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,10 +16,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "codigoLivro", scope=Livro.class)
+
 @Entity
 @Table(name = "livro")
 public class Livro {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "codigolivro")
@@ -25,25 +29,24 @@ public class Livro {
 	@Column(name = "nomelivro")
 	private String nomeLivro;
 
-	@Column(name = "nomeautor")
-	private String nomeAutor;
+	/* @JsonBackReference(value = "editora-livro-ref") */
+	@ManyToOne
+	@JoinColumn(name = "codigoeditora", referencedColumnName = "codigoeditora")
+	private Editora editora;
+
+	@ManyToOne
+	@JoinColumn(name = "codigoautor", referencedColumnName = "codigoautor")
+	private Autor autor;
+
+	/* @JsonManagedReference(value = "livro-emprestimo-ref") */
+	@OneToMany(mappedBy = "livro")
+	private List<Emprestimo> emprestimo;
 
 	@Column(name = "datalancamento")
 	private Date dataLancamento;
 
 	@Column(name = "codigoisbn")
 	private Integer codigoIsbn;
-
-	@ManyToOne
-    @JoinColumn(name = "codigoeditora", referencedColumnName = "codigoeditora")
-    private Editora editora;
-	
-	@OneToMany(mappedBy = "livro")
-	private List<Emprestimo>emprestimos;
-	
-	
-
-	// get sets:
 
 	public Integer getCodigoLivro() {
 		return codigoLivro;
@@ -61,12 +64,28 @@ public class Livro {
 		this.nomeLivro = nomeLivro;
 	}
 
-	public String getNomeAutor() {
-		return nomeAutor;
+	public Editora getEditora() {
+		return editora;
 	}
 
-	public void setNomeAutor(String nomeAutor) {
-		this.nomeAutor = nomeAutor;
+	public void setEditora(Editora editora) {
+		this.editora = editora;
+	}
+
+	public Autor getAutor() {
+		return autor;
+	}
+
+	public void setAutor(Autor autor) {
+		this.autor = autor;
+	}
+
+	public List<Emprestimo> getEmprestimo() {
+		return emprestimo;
+	}
+
+	public void setEmprestimo(List<Emprestimo> emprestimo) {
+		this.emprestimo = emprestimo;
 	}
 
 	public Date getDataLancamento() {
@@ -84,23 +103,5 @@ public class Livro {
 	public void setCodigoIsbn(Integer codigoIsbn) {
 		this.codigoIsbn = codigoIsbn;
 	}
-
-	public Editora getEditora() {
-		return editora;
-	}
-
-	public void setEditora(Editora editora) {
-		this.editora = editora;
-	}
-
-	public List<Emprestimo> getEmprestimos() {
-		return emprestimos;
-	}
-
-	public void setEmprestimos(List<Emprestimo> emprestimos) {
-		this.emprestimos = emprestimos;
-	}
-
-	
 
 }

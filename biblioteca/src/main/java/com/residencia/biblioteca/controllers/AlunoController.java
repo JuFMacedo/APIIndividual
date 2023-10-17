@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.residencia.biblioteca.DTO.AlunoResumidoDTO;
 import com.residencia.biblioteca.entities.Aluno;
 import com.residencia.biblioteca.services.AlunoService;
 
@@ -37,8 +38,25 @@ public class AlunoController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Aluno> buscarPorId(@PathVariable Integer id) {
-		return new ResponseEntity<>(alunoService.buscarAlunoPorId(id), HttpStatus.OK);
+		Aluno aluno = alunoService.buscarAlunoPorId(id);
 
+		if (aluno == null)
+			return new ResponseEntity<>(aluno, HttpStatus.NOT_FOUND);
+
+		else
+			return new ResponseEntity<>(aluno, HttpStatus.OK);
+	}
+
+	//DTO
+	
+	@GetMapping("/resumido/{id}")
+	public ResponseEntity<AlunoResumidoDTO> getResumidoPorId(@PathVariable Integer id) {
+		AlunoResumidoDTO alunoResDTO = alunoService.getAlunoResumoPorId(id);
+		if (alunoResDTO == null)
+			return new ResponseEntity<>(alunoResDTO, HttpStatus.NOT_FOUND);
+
+		else
+			return new ResponseEntity<>(alunoResDTO, HttpStatus.OK);
 	}
 
 	// Pesquisa por QUERY: /aluno/porid?id=5
@@ -53,7 +71,7 @@ public class AlunoController {
 
 	@PostMapping
 	public ResponseEntity<Aluno> salvar(@RequestBody Aluno aluno) {
-		return new ResponseEntity<>(alunoService.salvarAluno(aluno), HttpStatus.OK);
+		return new ResponseEntity<>(alunoService.salvarAluno(aluno), HttpStatus.CREATED);
 
 	}
 	// Para atualizar dados
@@ -68,8 +86,10 @@ public class AlunoController {
 
 	@DeleteMapping
 	public ResponseEntity<String> deletarAluno(@RequestBody Aluno aluno) {
-		alunoService.deletarAluno(aluno);
-		return new ResponseEntity<>("Deletado com Sucesso", HttpStatus.OK);
-	}
+		if (alunoService.deletarAluno(aluno))
+			return new ResponseEntity<>("Deletado com Sucesso", HttpStatus.OK);
 
+		else
+			return new ResponseEntity<>("Não foi possível deletar", HttpStatus.BAD_REQUEST);
+	}
 }

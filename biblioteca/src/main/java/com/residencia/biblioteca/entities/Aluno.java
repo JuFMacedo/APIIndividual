@@ -3,6 +3,9 @@ package com.residencia.biblioteca.entities;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,44 +14,46 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "numeroMatriculaAluno")
 @Entity
-@Table(name = "aluno") 
+@Table(name = "aluno")
 public class Aluno {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "numeromatriculaaluno")
 	private Integer numeroMatriculaAluno;
-	
+
 	@Column(name = "nome")
 	private String nome;
-	
+
 	@Column(name = "datanascimento")
 	private Date dataNascimento;
-	
+
 	@Column(name = "cpf")
 	private String cpf;
-	
+
 	@Column(name = "logradouro")
 	private String logradouro;
-	
+
 	@Column(name = "numerologradouro")
 	private String numeroLogradouro;
-	
-	@Column (name = "complemento")
+
+	@Column(name = "complemento")
 	private String complemento;
-	
-	@Column (name = "bairro")
+
+	@Column(name = "bairro")
 	private String bairro;
-	
-	@Column (name = "cidade")
+
+	@Column(name = "cidade")
 	private String cidade;
-	
-	@OneToMany (mappedBy = "aluno")  //mappeby recebe a instância aluno da classe emprestimo para poder vincular uma com a outra
+
+	/* @JsonManagedReference(value = "aluno-mng-ref") */ // vai ser responsavel por gerenciar uma ação entre as duas
+															// entidades
+	@OneToMany(mappedBy = "aluno")
 	private List<Emprestimo> emprestimos;
-	
-	
-	//get e sets
+
+	// get e sets
 
 	public Integer getNumeroMatriculaAluno() {
 		return numeroMatriculaAluno;
@@ -130,5 +135,4 @@ public class Aluno {
 		this.emprestimos = emprestimos;
 	}
 
-	
 }

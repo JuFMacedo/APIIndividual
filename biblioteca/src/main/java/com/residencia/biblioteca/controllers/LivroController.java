@@ -36,7 +36,13 @@ public class LivroController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Livro> buscarPorId(@PathVariable Integer id) {
-		return new ResponseEntity<>(livroService.buscarLivroPorId(id), HttpStatus.OK);
+		Livro livro = livroService.buscarLivroPorId(id);
+
+		if (livro == null)
+			return new ResponseEntity<>(livro, HttpStatus.NOT_FOUND);
+
+		else
+			return new ResponseEntity<>(livro, HttpStatus.OK);
 
 	}
 	// para salvar/postar um novo Livro
@@ -58,7 +64,11 @@ public class LivroController {
 
 	@DeleteMapping
 	public ResponseEntity<String> deletarLivro(@RequestBody Livro livro) {
-		livroService.deletarLivro(livro);
-		return new ResponseEntity<>("Deletado com Sucesso", HttpStatus.OK);
+
+		if (livroService.deletarLivro(livro))
+			return new ResponseEntity<>("Deletado com Sucesso", HttpStatus.OK);
+
+		else
+			return new ResponseEntity<>("Não foi possível deletar", HttpStatus.BAD_REQUEST);
 	}
 }

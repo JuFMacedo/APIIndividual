@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.residencia.biblioteca.DTO.AlunoResumidoDTO;
 import com.residencia.biblioteca.entities.Aluno;
 import com.residencia.biblioteca.repositories.AlunoRepository;
 
@@ -26,7 +27,28 @@ public class AlunoService {
 
 	// recuperar um aluno pela chave primária
 	public Aluno buscarAlunoPorId(Integer id) {
-		return alunoRepo.findById(id).get();
+
+		// return alunoRepo.findById(id).get();
+		/*
+		 * Optional<Aluno> alunoBanco = alunoRepo.findById(id); if
+		 * (alunoBanco.isPresent()) return alunoRepo.findById(id).get(); else return
+		 * null;
+		 */
+		return alunoRepo.findById(id).orElse(null);
+	}
+
+	//DTO
+	
+	public AlunoResumidoDTO getAlunoResumoPorId(Integer id) {
+
+		Aluno aluno = alunoRepo.findById(id).orElse(null);
+		AlunoResumidoDTO alunoResDTO = new AlunoResumidoDTO();
+
+		alunoResDTO.setNumeroMatriculaAluno(aluno.getNumeroMatriculaAluno());
+		alunoResDTO.setNome(aluno.getNome());
+		alunoResDTO.setCpf(aluno.getCpf());
+
+		return alunoResDTO;
 	}
 
 	// salvar um novo aluno
@@ -41,18 +63,44 @@ public class AlunoService {
 	}
 
 	// deletar um determinado aluno
-	public void deletarAluno(Aluno aluno) { // pode usar puxando pelo ID, o que torna a busca e
-		alunoRepo.delete(aluno); // o deletar mais fácil ao invés do nome
 
+	/*
+	 * public void deletarAlunoPorId(Integer id) { if (id == null) return null;
+	 * 
+	 * Aluno aluno = buscarAlunoPorId(id); if (aluno == null) return null;
+	 * 
+	 * alunoRepo.deleteById(id); }
+	 */
+
+	public Boolean deletarAluno(Aluno aluno) { // pode usar puxando pelo ID, o que torna a busca e o deletar mais fácil
+												// ao invés do nome
+
+		if (aluno == null)
+			return null;
+
+		Aluno alunoExistente = buscarAlunoPorId(aluno.getNumeroMatriculaAluno());
+
+		if (alunoExistente == null)
+			return null;
+
+		alunoRepo.delete(aluno);
+
+		Aluno alunoContinuaExistindo = buscarAlunoPorId(aluno.getNumeroMatriculaAluno());
+		if (alunoContinuaExistindo == null)
+			return true;
+
+		else
+			return false;
+
+		// É o esboço para poder colocar esse controle de verificação
+		// e retorno se foi deletado ou não
 		/*
 		 * Aluno confereAlunoDeletado =
 		 * buscarAlunoPorId(aluno.getNumeroMatriculaAluno());
 		 * 
-		 * if(null == confereAlunoDeletado)
-		 * o aluno foi deletado
+		 * if(null == confereAlunoDeletado) significa que o aluno foi deletado
 		 * 
-		 * else
-		 * O aluno continua existindo
+		 * else significa que O aluno continua existindo
 		 */
 	}
 

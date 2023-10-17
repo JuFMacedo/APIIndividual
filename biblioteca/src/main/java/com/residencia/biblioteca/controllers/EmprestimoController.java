@@ -36,7 +36,13 @@ public class EmprestimoController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Emprestimo> buscarPorId(@PathVariable Integer id) {
-		return new ResponseEntity<>(emprestimoService.buscarEmprestimoPorId(id), HttpStatus.OK);
+		Emprestimo emprestimo = emprestimoService.buscarEmprestimoPorId(id);
+		
+		if (emprestimo == null)
+			return new ResponseEntity<>(emprestimo, HttpStatus.NOT_FOUND);
+
+		else
+			return new ResponseEntity<>(emprestimo, HttpStatus.OK);
 
 	}
 	// para salvar/postar um novo Emprestimo
@@ -58,8 +64,12 @@ public class EmprestimoController {
 
 	@DeleteMapping
 	public ResponseEntity<String> deletarEmprestimo(@RequestBody Emprestimo emprestimo) {
-		emprestimoService.deletarEmprestimo(emprestimo);
-		return new ResponseEntity<>("Deletado com Sucesso", HttpStatus.OK);
+
+		if (emprestimoService.deletarEmprestimo(emprestimo))
+			return new ResponseEntity<>("Deletado com Sucesso", HttpStatus.OK);
+
+		else
+			return new ResponseEntity<>("Não foi possível deletar", HttpStatus.BAD_REQUEST);
 	}
 
 }

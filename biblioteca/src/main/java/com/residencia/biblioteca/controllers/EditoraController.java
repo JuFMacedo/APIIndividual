@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.residencia.biblioteca.entities.Editora;
 import com.residencia.biblioteca.services.EditoraService;
 
@@ -36,9 +35,15 @@ public class EditoraController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Editora> buscarPorId(@PathVariable Integer id) {
-		return new ResponseEntity<>(editoraService.buscarEditoraPorId(id), HttpStatus.OK);
+		Editora editora = editoraService.buscarEditoraPorId(id);
 
+		if (editora == null)
+			return new ResponseEntity<>(editora, HttpStatus.NOT_FOUND);
+
+		else
+			return new ResponseEntity<>(editora, HttpStatus.OK);
 	}
+
 	// para salvar/postar uma nova editora
 
 	@PostMapping
@@ -58,8 +63,12 @@ public class EditoraController {
 
 	@DeleteMapping
 	public ResponseEntity<String> deletarEditora(@RequestBody Editora editora) {
-		editoraService.deletarEditora(editora);
-		return new ResponseEntity<>("Deletado com Sucesso", HttpStatus.OK);
+
+		if (editoraService.deletarEditora(editora))
+			return new ResponseEntity<>("Deletado com Sucesso", HttpStatus.OK);
+
+		else
+			return new ResponseEntity<>("Não foi possível deletar", HttpStatus.BAD_REQUEST);
 	}
 
 }
