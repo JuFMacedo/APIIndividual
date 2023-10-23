@@ -14,25 +14,31 @@ public class LivroService {
 	@Autowired
 	LivroRepository livroRepo;
 
-		public List<Livro> listarLivros() {
+	@Autowired
+	EmailService emailService;
+
+	public List<Livro> listarLivros() {
 		return livroRepo.findAll();
 	}
 
-		public Livro buscarLivroPorId(Integer id) {
+	public Livro buscarLivroPorId(Integer id) {
 		return livroRepo.findById(id).orElse(null);
 	}
 
-		public Livro salvarLivro(Livro livro) {
-		return livroRepo.save(livro);
+	public Livro salvarLivro(Livro livro) {
+		Livro newLivro = livroRepo.save(livro);
+		
+		//email que vai receber a notificação
+		emailService.enviarEmail("juliafmacedo712@gmail.com", "Novo livro cadastrado", newLivro.toString()); 
+		return newLivro;
 
 	}
 
-		public Livro atualizarLivro(Livro livro) {
+	public Livro atualizarLivro(Livro livro) {
 		return livroRepo.save(livro);
 	}
 
-	
-	public Boolean deletarLivro(Livro livro) { 
+	public Boolean deletarLivro(Livro livro) {
 		if (livro == null)
 			return null;
 

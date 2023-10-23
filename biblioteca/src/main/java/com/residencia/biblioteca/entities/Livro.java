@@ -16,7 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "codigoLivro", scope=Livro.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "codigoLivro", scope = Livro.class)
 
 @Entity
 @Table(name = "livro")
@@ -102,6 +102,13 @@ public class Livro {
 
 	public void setCodigoIsbn(Integer codigoIsbn) {
 		this.codigoIsbn = codigoIsbn;
+	}
+
+	@Override
+	public String toString() {
+		return "Livro [codigoLivro=" + codigoLivro + ", nomeLivro=" + nomeLivro + ", editora=" + editora + ", autor="
+				+ autor + ", emprestimo=" + emprestimo + ", dataLancamento=" + dataLancamento + ", codigoIsbn="
+				+ codigoIsbn + "]";
 	}
 
 }
